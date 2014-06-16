@@ -8,11 +8,19 @@ module ReverseMarkdown
       end
 
       def table_header_row?(node)
-        node.element_children.all? {|child| child.name.to_sym == :th}
+        (contained_in_thead?(node) || node.element_children.all? {|child| child.name.to_sym == :th}) && !contained_in_tbody?(node)
       end
 
       def underline_for(node)
         "| " + (['---'] * node.element_children.size).join(' | ') + " |\n"
+      end
+      
+      def contained_in_thead?(node)
+        node.parent && node.parent.name == 'thead'
+      end
+      
+      def contained_in_tbody?(node)
+        node.parent && node.parent.name == 'tbody'
       end
     end
 
